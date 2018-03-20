@@ -26,7 +26,8 @@
 ; */
 
 
-#include <iom323.h>
+#include <iom2560.h>
+#include "protable.h"
 
 ; Declare all extern symbols here - including any ISRs that are referenced in
 ; the vector table.
