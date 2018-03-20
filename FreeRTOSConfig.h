@@ -28,7 +28,7 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
-#include <iom323.h>
+#include <iom2560.h>
 
 #define configCALL_STACK_SIZE	20
 
