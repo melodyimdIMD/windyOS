@@ -77,28 +77,29 @@ unsigned char ucByte;
 
 	portENTER_CRITICAL();
 	{
-		/* Create the queues used by the com test task. */
-		xRxedChars = xQueueCreate( uxQueueLength, ( unsigned portBASE_TYPE ) sizeof( signed char ) );
-		xCharsForTx = xQueueCreate( uxQueueLength, ( unsigned portBASE_TYPE ) sizeof( signed char ) );
-
-		/* Calculate the baud rate register value from the equation in the
-		data sheet. */
-		ulBaudRateCounter = ( configCPU_CLOCK_HZ / ( serBAUD_DIV_CONSTANT * ulWantedBaud ) ) - ( unsigned long ) 1;
-
-		/* Set the baud rate. */	
-		ucByte = ( unsigned char ) ( ulBaudRateCounter & ( unsigned long ) 0xff );	
-		outb( UBRRL, ucByte );
-
-		ulBaudRateCounter >>= ( unsigned long ) 8;
-		ucByte = ( unsigned char ) ( ulBaudRateCounter & ( unsigned long ) 0xff );	
-		outb( UBRRH, ucByte );
-
-		/* Enable the Rx interrupt.  The Tx interrupt will get enabled
-		later. Also enable the Rx and Tx. */
-		outb( UCSRB, serRX_INT_ENABLE | serRX_ENABLE | serTX_ENABLE );
-
-		/* Set the data bits to 8. */
-		outb( UCSRC, serUCSRC_SELECT | serEIGHT_DATA_BITS );
+        
+//		/* Create the queues used by the com test task. */
+//		xRxedChars = xQueueCreate( uxQueueLength, ( unsigned portBASE_TYPE ) sizeof( signed char ) );
+//		xCharsForTx = xQueueCreate( uxQueueLength, ( unsigned portBASE_TYPE ) sizeof( signed char ) );
+//
+//		/* Calculate the baud rate register value from the equation in the
+//		data sheet. */
+//		ulBaudRateCounter = ( configCPU_CLOCK_HZ / ( serBAUD_DIV_CONSTANT * ulWantedBaud ) ) - ( unsigned long ) 1;
+//
+//		/* Set the baud rate. */	
+//		ucByte = ( unsigned char ) ( ulBaudRateCounter & ( unsigned long ) 0xff );	
+//		outb( UBRRL, ucByte );
+//
+//		ulBaudRateCounter >>= ( unsigned long ) 8;
+//		ucByte = ( unsigned char ) ( ulBaudRateCounter & ( unsigned long ) 0xff );	
+//		outb( UBRRH, ucByte );
+//
+//		/* Enable the Rx interrupt.  The Tx interrupt will get enabled
+//		later. Also enable the Rx and Tx. */
+//		outb( UCSRB, serRX_INT_ENABLE | serRX_ENABLE | serTX_ENABLE );
+//
+//		/* Set the data bits to 8. */
+//		outb( UCSRC, serUCSRC_SELECT | serEIGHT_DATA_BITS );
 	}
 	portEXIT_CRITICAL();
 	
@@ -132,7 +133,7 @@ signed portBASE_TYPE xSerialPutChar( xComPortHandle pxPort, signed char cOutChar
 		return pdFAIL;
 	}
 
-	vInterruptOn();
+//	vInterruptOn();
 
 	return pdPASS;
 }
@@ -145,14 +146,14 @@ unsigned char ucByte;
 	/* Turn off the interrupts.  We may also want to delete the queues and/or
 	re-install the original ISR. */
 
-	portENTER_CRITICAL();
-	{
-		vInterruptOff();
-		ucByte = UCSRB;
-		ucByte &= ~serRX_INT_ENABLE;
-		outb( UCSRB, ucByte );
-	}
-	portEXIT_CRITICAL();
+//	portENTER_CRITICAL();
+//	{
+//		vInterruptOff();
+//		ucByte = UCSRB;
+//		ucByte &= ~serRX_INT_ENABLE;
+//		outb( UCSRB, ucByte );
+//	}
+//	portEXIT_CRITICAL();
 }
 /*-----------------------------------------------------------*/
 
@@ -163,7 +164,7 @@ signed char ucChar, xHigherPriorityTaskWoken = pdFALSE;
 	/* Get the character and post it on the queue of Rxed characters.
 	If the post causes a task to wake force a context switch as the woken task
 	may have a higher priority than the task we have interrupted. */
-	ucChar = UDR;
+//	ucChar = UDR;
 
 	xQueueSendFromISR( xRxedChars, &ucChar, &xHigherPriorityTaskWoken );
 
@@ -178,15 +179,15 @@ __interrupt void SIG_UART_DATA( void )
 {
 signed char cChar, cTaskWoken = pdFALSE;
 
-	if( xQueueReceiveFromISR( xCharsForTx, &cChar, &cTaskWoken ) == pdTRUE )
-	{
-		/* Send the next character queued for Tx. */
-		outb( UDR, cChar );
-	}
-	else
-	{
-		/* Queue empty, nothing to send. */
-		vInterruptOff();
-	}
+//	if( xQueueReceiveFromISR( xCharsForTx, &cChar, &cTaskWoken ) == pdTRUE )
+//	{
+//		/* Send the next character queued for Tx. */
+//		outb( UDR, cChar );
+//	}
+//	else
+//	{
+//		/* Queue empty, nothing to send. */
+//		vInterruptOff();
+//	}
 }
 
