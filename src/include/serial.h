@@ -86,13 +86,13 @@ typedef enum
 	ser115200
 } eBaud;
 
-xComPortHandle xSerialPortInitMinimal( unsigned long ulWantedBaud, unsigned portBASE_TYPE uxQueueLength );
+xComPortHandle xSerialPortInitMinimal( unsigned long ulWantedBaud, unsigned portBASE_TYPE uxQueueLength , uint8_t uComNum);
 xComPortHandle xSerialPortInit( eCOMPort ePort, eBaud eWantedBaud, eParity eWantedParity, eDataBits eWantedDataBits, eStopBits eWantedStopBits, unsigned portBASE_TYPE uxBufferLength );
-void vSerialPutString( xComPortHandle pxPort, const signed char * const pcString, unsigned short usStringLength );
-signed portBASE_TYPE xSerialGetChar( xComPortHandle pxPort, signed char *pcRxedChar, TickType_t xBlockTime );
-signed portBASE_TYPE xSerialPutChar( xComPortHandle pxPort, signed char cOutChar, TickType_t xBlockTime );
+void vSerialPutString( xComPortHandle pxPort, const signed char * const pcString, unsigned short usStringLength , uint8_t uComNum);
+signed portBASE_TYPE xSerialGetChar( xComPortHandle pxPort, signed char *pcRxedChar, TickType_t xBlockTime , uint8_t uComNum);
+signed portBASE_TYPE xSerialPutChar( xComPortHandle pxPort, signed char cOutChar, TickType_t xBlockTime  , uint8_t uComNum);
 portBASE_TYPE xSerialWaitForSemaphore( xComPortHandle xPort );
-void vSerialClose( xComPortHandle xPort );
+void vSerialClose( xComPortHandle xPort , uint8_t uComNum);
 
 #endif
 

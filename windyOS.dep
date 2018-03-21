@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
     <fileVersion>2</fileVersion>
-    <fileChecksum>3902709323</fileChecksum>
+    <fileChecksum>404491822</fileChecksum>
     <configuration>
         <name>Debug</name>
         <outputs>
@@ -115,6 +115,11 @@
             <file>$TOOLKIT_DIR$\lib\dlib\dlAVR-5s-ec_mul-n.h</file>
             <file>$TOOLKIT_DIR$\inc\iom2560.h</file>
             <file>$TOOLKIT_DIR$\inc\bitdefinitions\iom2560.inc</file>
+            <file>$PROJ_DIR$\src\mega2560\eeprom.c</file>
+            <file>$PROJ_DIR$\Debug\Obj\eeprom.r90</file>
+            <file>$PROJ_DIR$\Debug\Obj\eeprom.pbi</file>
+            <file>$PROJ_DIR$\src\mega2560\eeprom.h</file>
+            <file>$PROJ_DIR$\src\mega2560\usart.h</file>
         </outputs>
         <file>
             <name>$PROJ_DIR$\src\kernel\port.c</name>
@@ -151,10 +156,6 @@
                     <file> 78</file>
                 </tool>
                 <tool>
-                    <name>ICCAVR</name>
-                    <file> 69</file>
-                </tool>
-                <tool>
                     <name>BICOMP</name>
                     <file> 35</file>
                 </tool>
@@ -162,11 +163,11 @@
             <inputs>
                 <tool>
                     <name>ICCAVR</name>
-                    <file> 19 28 36 22 107 16 103 97 30 64 60 58 90 108 65 109 49 47 48 76 38 39 21 55 45</file>
+                    <file> 19 28 36 22 107 16 103 97 30 64 60 58 90 108 65 109 49 47 48 76 38 39 21 55 45 114</file>
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 16 36 47 45 30 60 39 28 103 107 90 48 64 21 22 97 58 49 108 65 109 76 55 19 38</file>
+                    <file> 107 90 45 28 103 36 39 30 16 60 47 64 21 114 22 97 58 49 38 19 108 65 109 48 76 55</file>
                 </tool>
             </inputs>
         </file>
@@ -527,11 +528,11 @@
             <inputs>
                 <tool>
                     <name>ICCAVR</name>
-                    <file> 19 28 36 22 107 16 103 97 30 18 64 60 58 90 108 65 109 49 47 48 76 38 21 55 53 52 62 45 51 61 91 67 92</file>
+                    <file> 19 28 36 22 107 16 103 97 30 18 113 64 60 58 90 108 65 109 49 47 48 76 38 21 55 53 52 62 45 51 61 91 67 92</file>
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 36 51 49 30 38 53 92 22 97 28 64 62 91 103 58 55 18 21 52 45 61 67 107 16 60 90 47 19 108 65 109 48 76</file>
+                    <file> 28 45 103 36 38 21 67 107 30 113 52 61 16 58 55 18 64 53 62 51 91 92 22 97 49 19 60 90 47 108 65 109 48 76</file>
                 </tool>
             </inputs>
         </file>
@@ -546,7 +547,30 @@
             <inputs>
                 <tool>
                     <name>XLINK</name>
-                    <file> 72 74 63 25 41 33 42 86 84 24 66 89 34 54 46 69 70 96 73</file>
+                    <file> 72 74 63 25 41 111 33 42 86 84 24 66 89 34 54 46 69 70 73</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\src\mega2560\eeprom.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCAVR</name>
+                    <file> 111</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 112</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCAVR</name>
+                    <file> 108 65 109 113</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 65 109 113 108</file>
                 </tool>
             </inputs>
         </file>

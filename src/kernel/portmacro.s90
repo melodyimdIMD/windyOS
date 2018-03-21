@@ -35,8 +35,17 @@
 ; ISR functions
 ; -------------
 EXTERN SIG_OUTPUT_COMPARE1A
-EXTERN SIG_UART_RECV
-EXTERN SIG_UART_DATA
+EXTERN SIG_UART0_RECV
+EXTERN SIG_UART0_DATA
+
+EXTERN SIG_UART1_RECV
+EXTERN SIG_UART1_DATA
+
+EXTERN SIG_UART2_RECV
+EXTERN SIG_UART2_DATA
+
+EXTERN SIG_UART3_RECV
+EXTERN SIG_UART3_DATA
 
 
 ; Functions used by scheduler
@@ -72,12 +81,31 @@ PUBLIC vPortStart
 
 	ORG TIMER1_COMPA_vect				; Vector address
 		jmp SIG_OUTPUT_COMPARE1A		; ISR
+;USART 0
+	ORG USART0_RX_vect					; Vector address
+		jmp SIG_UART0_RECV				; ISR
 
-	ORG USART_RXC_vect					; Vector address
-		jmp SIG_UART_RECV				; ISR
+	ORG USART0_UDRE_vect 				; Vector address
+		jmp SIG_UART0_DATA				; ISR
+;USART 1
+    ORG USART1_RX_vect					; Vector address
+		jmp SIG_UART0_RECV				; ISR
 
-	ORG USART_UDRE_vect					; Vector address
-		jmp SIG_UART_DATA				; ISR
+	ORG USART1_UDRE_vect 				; Vector address
+		jmp SIG_UART0_DATA				; ISR
+;USART 2
+    ORG USART2_RX_vect					; Vector address
+		jmp SIG_UART0_RECV				; ISR
+
+	ORG USART2_UDRE_vect 				; Vector address
+		jmp SIG_UART0_DATA				; ISR
+;USART 3
+    ORG USART3_RX_vect					; Vector address
+		jmp SIG_UART0_RECV				; ISR
+
+	ORG USART3_UDRE_vect 				; Vector address
+		jmp SIG_UART0_DATA				; ISR
+
 
 
 	RSEG CODE

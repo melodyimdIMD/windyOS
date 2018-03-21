@@ -2144,10 +2144,16 @@
         <file>
             <name>$PROJ_DIR$\src\kernel\tasks.c</name>
         </file>
+    </group>
+    <group>
+        <name>mega2560</name>
         <file>
-            <name>$PROJ_DIR$\src\kernel\test.c</name>
+            <name>$PROJ_DIR$\src\mega2560\eeprom.c</name>
         </file>
     </group>
+    <file>
+        <name>$PROJ_DIR$\FreeRTOSConfig.h</name>
+    </file>
     <file>
         <name>$PROJ_DIR$\main.c</name>
     </file>

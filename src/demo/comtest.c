@@ -113,11 +113,11 @@ static volatile UBaseType_t uxRxLoops = comINITIAL_RX_COUNT_VALUE;
 
 /*-----------------------------------------------------------*/
 
-void vAltStartComTestTasks( UBaseType_t uxPriority, uint32_t ulBaudRate, UBaseType_t uxLED )
+void vAltStartComTestTasks( UBaseType_t uxPriority, uint32_t ulBaudRate, UBaseType_t uxLED, uint8_t uComNum)
 {
 	/* Initialise the com port then spawn the Rx and Tx tasks. */
 	uxBaseLED = uxLED;
-	xSerialPortInitMinimal( ulBaudRate, comBUFFER_LEN );
+	xSerialPortInitMinimal( ulBaudRate, comBUFFER_LEN ,uComNum);
 
 	/* The Tx task is spawned with a lower priority than the Rx task. */
 	xTaskCreate( vComTxTask, "COMTx", comSTACK_SIZE, NULL, uxPriority - 1, ( TaskHandle_t * ) NULL );
@@ -139,7 +139,7 @@ TickType_t xTimeToWait;
 		comLAST_BYTE. */
 		for( cByteToSend = comFIRST_BYTE; cByteToSend <= comLAST_BYTE; cByteToSend++ )
 		{
-			if( xSerialPutChar( xPort, cByteToSend, comNO_BLOCK ) == pdPASS )
+			if( xSerialPutChar( xPort, cByteToSend, comNO_BLOCK ,0) == pdPASS )
 			{
 				vParTestToggleLED( uxBaseLED + comTX_LED_OFFSET );
 			}
@@ -183,7 +183,7 @@ BaseType_t xResyncRequired = pdFALSE, xErrorOccurred = pdFALSE;
 		{
 			/* Block on the queue that contains received bytes until a byte is
 			available. */
-			if( xSerialGetChar( xPort, &cByteRxed, comRX_BLOCK_TIME ) )
+			if( xSerialGetChar( xPort, &cByteRxed, comRX_BLOCK_TIME ,0) )
 			{
 				/* Was this the byte we were expecting?  If so, toggle the LED,
 				otherwise we are out on sync and should break out of the loop
@@ -211,7 +211,7 @@ BaseType_t xResyncRequired = pdFALSE, xErrorOccurred = pdFALSE;
 			while( cByteRxed != comLAST_BYTE )
 			{
 				/* Block until the next char is available. */
-				xSerialGetChar( xPort, &cByteRxed, comRX_BLOCK_TIME );
+				xSerialGetChar( xPort, &cByteRxed, comRX_BLOCK_TIME ,0);
 			}
 
 			/* Note that an error occurred which caused us to have to resync.
