@@ -48,8 +48,19 @@
 //#define serUCSRC_SELECT					( ( unsigned char ) 0x80 )
 #define serEIGHT_DATA_BITS				( ( unsigned char ) ((1 << UCSZn1) | (1 << UCSZn0)) )
 
-static QueueHandle_t xRxedChars;
-static QueueHandle_t xCharsForTx;
+//USART0
+static QueueHandle_t xRxedChars0;
+static QueueHandle_t xCharsForTx0;
+//USART1
+static QueueHandle_t xRxedChars1;
+static QueueHandle_t xCharsForTx1;
+//USART2
+static QueueHandle_t xRxedChars2;
+static QueueHandle_t xCharsForTx2;
+//USART3
+static QueueHandle_t xRxedChars3;
+static QueueHandle_t xCharsForTx3;
+
 
 #define vInterruptOn(n)										\
 {															\
@@ -81,8 +92,28 @@ xComPortHandle xSerialPortInitMinimal( unsigned long ulWantedBaud, unsigned port
 	{
         
 		/* Create the queues used by the com test task. */
-		xRxedChars = xQueueCreate( uxQueueLength, ( unsigned portBASE_TYPE ) sizeof( signed char ) );
-		xCharsForTx = xQueueCreate( uxQueueLength, ( unsigned portBASE_TYPE ) sizeof( signed char ) );
+        QueueHandle_t * pxRxedChars;
+        QueueHandle_t * pxCharsForTx;
+        switch(uComNum){
+          case 0:
+            pxRxedChars = &xRxedChars0;
+            pxCharsForTx = &xCharsForTx0;
+            break;
+          case 1:
+            pxRxedChars = &xRxedChars1;
+            pxCharsForTx = &xCharsForTx1;
+            break;
+          case 2:
+            pxRxedChars = &xRxedChars2;
+            pxCharsForTx = &xCharsForTx2;
+            break;
+          case 3:
+            pxRxedChars = &xRxedChars3;
+            pxCharsForTx = &xCharsForTx3;
+            break;
+        }
+		*pxRxedChars = xQueueCreate( uxQueueLength, ( unsigned portBASE_TYPE ) sizeof( signed char ) );
+		*pxCharsForTx = xQueueCreate( uxQueueLength, ( unsigned portBASE_TYPE ) sizeof( signed char ) );
         
 		/* Calculate the baud rate register value from the equation in the
 		data sheet. */
@@ -142,7 +173,23 @@ signed portBASE_TYPE xSerialGetChar( xComPortHandle pxPort, signed char *pcRxedC
 {
 	/* Get the next character from the buffer.  Return false if no characters
 	are available, or arrive before xBlockTime expires. */
-	if( xQueueReceive( xRxedChars, pcRxedChar, xBlockTime ) )
+    QueueHandle_t * pxRxedChars;
+
+    switch(uComNum){
+      case 0:
+        pxRxedChars = &xRxedChars0;
+        break;
+      case 1:
+        pxRxedChars = &xRxedChars1;
+        break;
+      case 2:
+        pxRxedChars = &xRxedChars2;        
+        break;
+      case 3:
+        pxRxedChars = &xRxedChars3;
+        break;
+    }
+	if( xQueueReceive( *pxRxedChars, pcRxedChar, xBlockTime ) )
 	{
 		return pdTRUE;
 	}
@@ -156,12 +203,41 @@ signed portBASE_TYPE xSerialGetChar( xComPortHandle pxPort, signed char *pcRxedC
 signed portBASE_TYPE xSerialPutChar( xComPortHandle pxPort, signed char cOutChar, TickType_t xBlockTime , uint8_t uComNum)
 {
 	/* Return false if after the block time there is no room on the Tx queue. */
-	if( xQueueSend( xCharsForTx, &cOutChar, xBlockTime ) != pdPASS )
+    
+    QueueHandle_t * pxCharsForTx;
+    switch(uComNum){
+      case 0:
+        pxCharsForTx = &xCharsForTx0;
+        break;
+      case 1:
+        pxCharsForTx = &xCharsForTx1;
+        break;
+      case 2:
+        pxCharsForTx = &xCharsForTx2;
+        break;
+      case 3:
+        pxCharsForTx = &xCharsForTx3;
+        break;
+    }
+	if( xQueueSend( *pxCharsForTx, &cOutChar, xBlockTime ) != pdPASS )
 	{
 		return pdFAIL;
 	}
+    switch(uComNum){
+      case 0:
+        vInterruptOn(0);
+        break;
+      case 1:
+        vInterruptOn(1);
+        break;
+      case 2:
+        vInterruptOn(2);
+        break;
+      case 3:
+        vInterruptOn(3);
+        break;
+    }
     
-    vInterruptOn(0);
     
 	return pdPASS;
 }
@@ -220,7 +296,7 @@ __interrupt void SIG_UART0_RECV( void )
 	may have a higher priority than the task we have interrupted. */
     ucChar = UDR0;
     
-	xQueueSendFromISR( xRxedChars, &ucChar, &xHigherPriorityTaskWoken );
+	xQueueSendFromISR( xRxedChars0, &ucChar, &xHigherPriorityTaskWoken );
     
 	if( xHigherPriorityTaskWoken != pdFALSE )
 	{
@@ -233,7 +309,7 @@ __interrupt void SIG_UART0_DATA( void )
 {
     signed char cChar, cTaskWoken = pdFALSE;
     
-    if( xQueueReceiveFromISR( xCharsForTx, &cChar, &cTaskWoken ) == pdTRUE )
+    if( xQueueReceiveFromISR( xCharsForTx0, &cChar, &cTaskWoken ) == pdTRUE )
     {
         /* Send the next character queued for Tx. */
         outb( UDR0, cChar );
@@ -241,7 +317,7 @@ __interrupt void SIG_UART0_DATA( void )
     else
     {
         /* Queue empty, nothing to send. */
-        //        vInterruptOff();
+        vInterruptOff(0);
         unsigned char ucByte;					
         
         ucByte = UCSR0B;											
@@ -263,7 +339,7 @@ __interrupt void SIG_UART1_RECV( void )
 	may have a higher priority than the task we have interrupted. */
     ucChar = UDR1;
     
-	xQueueSendFromISR( xRxedChars, &ucChar, &xHigherPriorityTaskWoken );
+	xQueueSendFromISR( xRxedChars1, &ucChar, &xHigherPriorityTaskWoken );
     
 	if( xHigherPriorityTaskWoken != pdFALSE )
 	{
@@ -276,7 +352,7 @@ __interrupt void SIG_UART1_DATA( void )
 {
     signed char cChar, cTaskWoken = pdFALSE;
     
-    if( xQueueReceiveFromISR( xCharsForTx, &cChar, &cTaskWoken ) == pdTRUE )
+    if( xQueueReceiveFromISR( xCharsForTx1, &cChar, &cTaskWoken ) == pdTRUE )
     {
         /* Send the next character queued for Tx. */
         outb( UDR1, cChar );
@@ -284,7 +360,7 @@ __interrupt void SIG_UART1_DATA( void )
     else
     {
         /* Queue empty, nothing to send. */
-        //        vInterruptOff();
+        vInterruptOff(1);
         unsigned char ucByte;					
         
         ucByte = UCSR1B;											
@@ -305,7 +381,7 @@ __interrupt void SIG_UART2_RECV( void )
 	may have a higher priority than the task we have interrupted. */
     ucChar = UDR2;
     
-	xQueueSendFromISR( xRxedChars, &ucChar, &xHigherPriorityTaskWoken );
+	xQueueSendFromISR( xRxedChars2, &ucChar, &xHigherPriorityTaskWoken );
     
 	if( xHigherPriorityTaskWoken != pdFALSE )
 	{
@@ -318,7 +394,7 @@ __interrupt void SIG_UART2_DATA( void )
 {
     signed char cChar, cTaskWoken = pdFALSE;
     
-    if( xQueueReceiveFromISR( xCharsForTx, &cChar, &cTaskWoken ) == pdTRUE )
+    if( xQueueReceiveFromISR( xCharsForTx2, &cChar, &cTaskWoken ) == pdTRUE )
     {
         /* Send the next character queued for Tx. */
         outb( UDR2, cChar );
@@ -326,7 +402,7 @@ __interrupt void SIG_UART2_DATA( void )
     else
     {
         /* Queue empty, nothing to send. */
-        //        vInterruptOff();
+        vInterruptOff(2);
         unsigned char ucByte;					
         
         ucByte = UCSR2B;											
@@ -347,7 +423,7 @@ __interrupt void SIG_UART3_RECV( void )
 	may have a higher priority than the task we have interrupted. */
     ucChar = UDR3;
     
-	xQueueSendFromISR( xRxedChars, &ucChar, &xHigherPriorityTaskWoken );
+	xQueueSendFromISR( xRxedChars3, &ucChar, &xHigherPriorityTaskWoken );
     
 	if( xHigherPriorityTaskWoken != pdFALSE )
 	{
@@ -360,7 +436,7 @@ __interrupt void SIG_UART3_DATA( void )
 {
     signed char cChar, cTaskWoken = pdFALSE;
     
-    if( xQueueReceiveFromISR( xCharsForTx, &cChar, &cTaskWoken ) == pdTRUE )
+    if( xQueueReceiveFromISR( xCharsForTx3, &cChar, &cTaskWoken ) == pdTRUE )
     {
         /* Send the next character queued for Tx. */
         outb( UDR3, cChar );
@@ -368,7 +444,7 @@ __interrupt void SIG_UART3_DATA( void )
     else
     {
         /* Queue empty, nothing to send. */
-        //        vInterruptOff();
+        vInterruptOff(3);
         unsigned char ucByte;					
         
         ucByte = UCSR3B;											
