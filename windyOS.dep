@@ -129,10 +129,6 @@
                     <file> 29</file>
                 </tool>
                 <tool>
-                    <name>ICCAVR</name>
-                    <file> 89</file>
-                </tool>
-                <tool>
                     <name>BICOMP</name>
                     <file> 102</file>
                 </tool>
@@ -144,7 +140,7 @@
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 30 36 109 76 22 97 28 49 21 103 58 108 65 64 107 16 60 90 47 48 19 38 55</file>
+                    <file> 103 58 109 76 28 21 36 22 97 49 30 108 65 64 107 16 60 90 47 48 19 38 55</file>
                 </tool>
             </inputs>
         </file>
@@ -360,7 +356,7 @@
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 30 36 51 22 97 28 49 48 21 103 58 64 45 67 107 16 60 90 47 108 65 109 76 19 38 55</file>
+                    <file> 107 90 51 28 103 36 108 65 48 21 30 16 60 47 64 45 67 22 97 58 49 109 76 19 38 55</file>
                 </tool>
             </inputs>
         </file>
